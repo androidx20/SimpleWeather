@@ -10,14 +10,11 @@ import org.litepal.crud.DataSupport;
 public class Province extends DataSupport {
 
 
-    /**
-     * id : 1
-     * name : 北京
-     */
-
     private int id;
 
-    private String name;
+    private String provinceName;
+
+    private int provinceCode;
 
     public int getId() {
         return id;
@@ -27,11 +24,17 @@ public class Province extends DataSupport {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getProvinceName() {
+        return provinceName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
     }
+
+    public int getProvinceCode() { return provinceCode; }
+
+    public void setProvinceCode(int provinceCode) { this.provinceCode = provinceCode; }
+
+
 }
