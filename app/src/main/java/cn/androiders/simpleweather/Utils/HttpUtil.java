@@ -12,10 +12,10 @@ public class HttpUtil {
     private static final String TAG = "HttpUtil";
 
 
-    public static void httpSendRequest(String url){
+    public static void httpSendRequest(String url, okhttp3.Callback callback){
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
-        client.newCall(request);
+        client.newCall(request).enqueue(callback);
     }
 
     private static boolean isNetworkAvailable(){
