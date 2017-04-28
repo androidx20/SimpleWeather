@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.androiders.simpleweather.Db.City;
+import cn.androiders.simpleweather.Db.County;
 import cn.androiders.simpleweather.Db.Province;
 import cn.androiders.simpleweather.R;
 import cn.androiders.simpleweather.SimpleWeatherApplication;
@@ -48,13 +48,15 @@ public class ChooseFragment extends Fragment {
     List<Province> provinceList;
     //市区列表
     List<City> cityList;
+    //县区列表
+    List<County> countyList;
 
 
     private int currentLevel;
 
 
     private Province selectProvince;
-
+    private City selectCity;
 
 
     private ProgressDialog progressDialog;
@@ -94,8 +96,13 @@ public class ChooseFragment extends Fragment {
                 if(currentLevel == LEVEL_PROVINCE){
                     selectProvince = provinceList.get(position);
                     queryCities();
+                }else if(currentLevel == LEVEL_CITY){
+                    selectCity = cityList.get(position);
+                    queryCounties();
                 }
             }
+
+
         });
 
 
@@ -111,7 +118,6 @@ public class ChooseFragment extends Fragment {
         });
 
         queryProvince();
-
 
     }
 
@@ -153,9 +159,30 @@ public class ChooseFragment extends Fragment {
         }else{
             int provinceCode = selectProvince.getProvinceCode();
             String url = "http://guolin.tech/api/china/" + provinceCode;
-            Log.d(TAG, "queryCities: " + url);
             queryFromService(url, "city");
         }
+    }
+
+    private void queryCounties() {
+        titleText.setText(selectCity.getCityName());
+        backButton.setVisibility(View.VISIBLE);
+
+        countyList = DataSupport.where("cityid = ?", String.valueOf(selectCity.getCityCode())).find(County.class);
+        if(countyList.size() > 0){
+            dataList.clear();
+            for(County county : countyList){
+                dataList.add(county.getCountyName());
+            }
+            adapter.notifyDataSetChanged();
+            listView.setSelection(0);
+            currentLevel = LEVEL_COUNTRY;
+        }else{
+            int provinceId = selectProvince.getProvinceCode();
+            int cityId = selectCity.getCityCode();
+            String url = "http://guolin.tech/api/china/" + provinceId + "/" + cityId;
+            queryFromService(url, "county");
+        }
+
     }
 
 
@@ -183,6 +210,8 @@ public class ChooseFragment extends Fragment {
                 }else if("city".equals(type)){
                     result = Utility.handleCityResponse(textResponse, selectProvince.getProvinceCode());
 
+                }else if("county".equals(type)){
+                    result = Utility.handleCountryResponse(textResponse, selectCity.getCityCode());
                 }
 
                 if(result){
@@ -194,6 +223,8 @@ public class ChooseFragment extends Fragment {
                                 queryProvince();
                             }else if("city".equals(type)){
                                 queryCities();
+                            }else if("county".equals(type)){
+                                queryCounties();
                             }
                         }
                     });
