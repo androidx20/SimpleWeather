@@ -1,5 +1,6 @@
 package cn.androiders.simpleweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,8 +22,10 @@ import com.bumptech.glide.Glide;
 import java.io.IOException;
 
 import cn.androiders.simpleweather.Gson.Weather;
+import cn.androiders.simpleweather.Service.AutoUpdateService;
 import cn.androiders.simpleweather.Utils.HttpUtil;
 import cn.androiders.simpleweather.Utils.Utility;
+import cn.androiders.simpleweather.Utils.WeatherURL;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -92,7 +95,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void loadBingPic() {
-        String url = "http://guolin.tech/api/bing_pic";
+        String url = WeatherURL.BING_PIC_URL;
         HttpUtil.httpSendRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -117,7 +120,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     public void requestWeather(final String weahterId) {
-        String url = "https://free-api.heweather.com/v5/weather?city=" + weahterId +"&key=6ad8ca2cd2024a4db017e6a5f0c03e29";
+        String url = WeatherURL.WEATHER_URL + "&city=" + weahterId;
         HttpUtil.httpSendRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -186,6 +189,9 @@ public class WeatherActivity extends AppCompatActivity {
         weatherInfoText.setText(weatherInfo);
 
         weahterLayout.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
 }
