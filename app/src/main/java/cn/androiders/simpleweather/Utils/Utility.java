@@ -2,6 +2,8 @@ package cn.androiders.simpleweather.Utils;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import cn.androiders.simpleweather.Db.City;
 import cn.androiders.simpleweather.Db.County;
 import cn.androiders.simpleweather.Db.Province;
+import cn.androiders.simpleweather.Gson.Weather;
 
 /**
  * 胡师寰 创建于 2017-04-27 11:44.
@@ -16,6 +19,7 @@ import cn.androiders.simpleweather.Db.Province;
  */
 
 public class Utility {
+
     private static final String TAG = "Utility";
 
 
@@ -81,5 +85,19 @@ public class Utility {
 
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse(String response) {
+
+        try {
+            JSONObject weatherObject = new JSONObject(response);
+            JSONArray weatherArray = weatherObject.getJSONArray("HeWeather5");
+            String weatherContent = weatherArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

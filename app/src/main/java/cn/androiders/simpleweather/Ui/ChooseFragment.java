@@ -1,6 +1,7 @@
 package cn.androiders.simpleweather.Ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import cn.androiders.simpleweather.R;
 import cn.androiders.simpleweather.SimpleWeatherApplication;
 import cn.androiders.simpleweather.Utils.HttpUtil;
 import cn.androiders.simpleweather.Utils.Utility;
+import cn.androiders.simpleweather.WeatherActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -99,12 +101,17 @@ public class ChooseFragment extends Fragment {
                 }else if(currentLevel == LEVEL_CITY){
                     selectCity = cityList.get(position);
                     queryCounties();
+                }else if(currentLevel == LEVEL_COUNTRY){
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weatherId", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
 
 
         });
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +159,6 @@ public class ChooseFragment extends Fragment {
             for (City city : cityList){
                 dataList.add(city.getCityName());
             }
-
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
