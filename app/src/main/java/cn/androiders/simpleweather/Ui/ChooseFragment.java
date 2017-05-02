@@ -24,6 +24,7 @@ import java.util.List;
 import cn.androiders.simpleweather.Db.City;
 import cn.androiders.simpleweather.Db.County;
 import cn.androiders.simpleweather.Db.Province;
+import cn.androiders.simpleweather.MainActivity;
 import cn.androiders.simpleweather.R;
 import cn.androiders.simpleweather.SimpleWeatherApplication;
 import cn.androiders.simpleweather.Utils.HttpUtil;
@@ -95,19 +96,27 @@ public class ChooseFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(currentLevel == LEVEL_PROVINCE){
-                    selectProvince = provinceList.get(position);
-                    queryCities();
-                }else if(currentLevel == LEVEL_CITY){
-                    selectCity = cityList.get(position);
-                    queryCounties();
-                }else if(currentLevel == LEVEL_COUNTRY){
-                    String weatherId = countyList.get(position).getWeatherId();
+            if(currentLevel == LEVEL_PROVINCE){
+                selectProvince = provinceList.get(position);
+                queryCities();
+            }else if(currentLevel == LEVEL_CITY){
+                selectCity = cityList.get(position);
+                queryCounties();
+            }else if(currentLevel == LEVEL_COUNTRY){
+
+                String weatherId = countyList.get(position).getWeatherId();
+                if(getActivity() instanceof MainActivity){
                     Intent intent = new Intent(getActivity(), WeatherActivity.class);
                     intent.putExtra("weatherId", weatherId);
                     startActivity(intent);
                     getActivity().finish();
+                }else if(getActivity() instanceof WeatherActivity){
+                    WeatherActivity activity = (WeatherActivity) getActivity();
+                    activity.drawerLayout.closeDrawers();
+                    activity.swipeRefresh.setRefreshing(true);
+                    activity.requestWeather(weatherId);
                 }
+            }
             }
 
 

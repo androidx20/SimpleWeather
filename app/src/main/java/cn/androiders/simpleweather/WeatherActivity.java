@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -26,8 +29,13 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
-    private SwipeRefreshLayout swipeRefresh;
+    public SwipeRefreshLayout swipeRefresh;
     private String mWeatherId;
+
+    public DrawerLayout drawerLayout;
+    private Button drawerHomeButton;
+
+
 
     private ScrollView weahterLayout;
     private TextView titleCity;
@@ -68,6 +76,13 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
 
+        drawerHomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+        });
+
         String bingPic= pfs.getString("bing_pic", null);
         if(bingPic != null){
             Glide.with(this).load(bingPic).into(bingPicImg);
@@ -101,7 +116,7 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
-    private void requestWeather(final String weahterId) {
+    public void requestWeather(final String weahterId) {
         String url = "https://free-api.heweather.com/v5/weather?city=" + weahterId +"&key=6ad8ca2cd2024a4db017e6a5f0c03e29";
         HttpUtil.httpSendRequest(url, new Callback() {
             @Override
@@ -152,6 +167,10 @@ public class WeatherActivity extends AppCompatActivity {
 
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerHomeButton = (Button) findViewById(R.id.draw_home);
+
 
     }
 
