@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import java.io.IOException;
 
@@ -38,7 +37,7 @@ public class AutoUpdateService extends Service {
         updateBingPic();
 
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 1 * 1000;
+        int anHour = 8 * 60 * 60 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateService.class);
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
@@ -63,7 +62,7 @@ public class AutoUpdateService extends Service {
                 editor.putString("bingPic", responseBodyString);
                 editor.apply();
 
-                Log.d(TAG, "onResponse: " + responseBodyString);
+               // Log.d(TAG, "onResponse: " + responseBodyString);
             }
         });
     }
@@ -91,7 +90,7 @@ public class AutoUpdateService extends Service {
                         editor.putString("weather", responseBodyString);
                         editor.apply();
 
-                        Log.d(TAG, "onResponse: " + weather.basic.cityName);
+                       // Log.d(TAG, "onResponse: " + weather.basic.cityName);
                     }
 
                 }
