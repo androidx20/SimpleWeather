@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences pfs = PreferenceManager.getDefaultSharedPreferences(this);
-        if(pfs.getString("weatherId", null) != null) {
+        if(pfs.getString("weather", null) != null) {
             Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
             finish();
