@@ -5,12 +5,12 @@ package cn.androiders.simpleweather.Gson;
  * E-mail: hxfsc2@gmail.com
  */
 
-public class Api {
+public class Aqi {
 
-    public AQICity city;
+    public AqiCity city;
 
-    public class AQICity{
-        public String api;
+    public class AqiCity{
+        public String aqi;
         public String pm25;
     }
 }

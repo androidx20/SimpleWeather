@@ -10,9 +10,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 
+import cn.androiders.simpleweather.Gson.Forecast;
 import cn.androiders.simpleweather.Gson.Weather;
 import cn.androiders.simpleweather.Service.AutoUpdateService;
 import cn.androiders.simpleweather.Utils.HttpUtil;
@@ -31,7 +34,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
-
+    private static final String TAG = "WeatherActivity";
     public SwipeRefreshLayout swipeRefresh;
     private String mWeatherId;
 
@@ -45,7 +48,19 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView titleUpdateTime;
     private TextView degreeText;
     private TextView weatherInfoText;
+    private LinearLayout forecastLayout;
+
+    private TextView apiTextView;
+    private TextView pm25TextView;
+
+    private TextView comfortTextView;
+    private TextView carwashTextView;
+    private TextView sportTextView;
+
     private ImageView bingPicImg;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +136,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     public void requestWeather(final String weahterId) {
         String url = WeatherURL.WEATHER_URL + "&city=" + weahterId;
+        //Log.d(TAG, "requestWeather: " + url);
         HttpUtil.httpSendRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -167,6 +183,15 @@ public class WeatherActivity extends AppCompatActivity {
         titleUpdateTime = (TextView) findViewById(R.id.title_update_time);
         degreeText = (TextView) findViewById(R.id.degree_text);
         weatherInfoText = (TextView) findViewById(R.id.weather_info_text);
+        forecastLayout = (LinearLayout) findViewById(R.id.forecast_layout);
+
+        apiTextView = (TextView) findViewById(R.id.api_text);
+        pm25TextView = (TextView) findViewById(R.id.pm25_text);
+
+        comfortTextView = (TextView) findViewById(R.id.comfort_text);
+        carwashTextView = (TextView) findViewById(R.id.car_wash_text);
+        sportTextView = (TextView) findViewById(R.id.sport_text);
+
         bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
 
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
@@ -183,11 +208,43 @@ public class WeatherActivity extends AppCompatActivity {
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.more.info;
+        String apiText = weather.aqi.city.aqi;
+        String pm25text = weather.aqi.city.pm25;
+        String comfortText = "舒适度：" + weather.suggestion.comfort.info;
+        String carWashText = "洗车建议：" + weather.suggestion.carwash.info;
+        String sportText = "运动建议：" + weather.suggestion.sport.info;
+
 
         titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
+
+        forecastLayout.removeAllViews();
+        for(Forecast forecast : weather.forecastList){
+            View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecastLayout, false);
+            TextView dateText = (TextView) view.findViewById(R.id.date_text);
+            TextView infoText = (TextView) view.findViewById(R.id.info_text);
+            TextView maxText = (TextView) view.findViewById(R.id.max_text);
+            TextView minText = (TextView) view.findViewById(R.id.min_text);
+            dateText.setText(forecast.date);
+            infoText.setText(forecast.more.info);
+            maxText.setText(forecast.temperature.max);
+            minText.setText(forecast.temperature.min);
+            forecastLayout.addView(view);
+        }
+
+        if(weather.aqi != null) {
+            apiTextView.setText(apiText);
+            pm25TextView.setText(pm25text);
+        }
+
+        if(weather.suggestion != null) {
+            comfortTextView.setText(comfortText);
+            carwashTextView.setText(carWashText);
+            sportTextView.setText(sportText);
+        }
+
 
         weahterLayout.setVisibility(View.VISIBLE);
 
