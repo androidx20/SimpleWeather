@@ -208,8 +208,7 @@ public class WeatherActivity extends AppCompatActivity {
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.more.info;
-        String apiText = weather.aqi.city.aqi;
-        String pm25text = weather.aqi.city.pm25;
+
         String comfortText = "舒适度：" + weather.suggestion.comfort.info;
         String carWashText = "洗车建议：" + weather.suggestion.carwash.info;
         String sportText = "运动建议：" + weather.suggestion.sport.info;
@@ -235,6 +234,8 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         if(weather.aqi != null) {
+            String apiText = weather.aqi.city.aqi;
+            String pm25text = weather.aqi.city.pm25;
             apiTextView.setText(apiText);
             pm25TextView.setText(pm25text);
         }
