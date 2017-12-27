@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SimpleWeather</string>
+    <string name="app_name">简单天气</string>
     <string name="forecast_text">预报</string>
     <string name="api_title_text">空气质量</string>
     <string name="api_index_text">AQI指数</string>
